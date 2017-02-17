@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import ContactInfo from './ContactInfo';
 import ContactDetails from './ContactDetails';
+import ContactCreate from './ContactCreate';
+import update from 'react-addons-update';
 
 export default class Contact extends Component {
     constructor(props) {
@@ -17,6 +19,9 @@ export default class Contact extends Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     handleChange(e) {
@@ -24,12 +29,35 @@ export default class Contact extends Component {
             keyword : e.target.value
         });
     }
+
     handleClick(key) {
         this.setState({
             selectedKey: key
         })
+    }
 
-        console.log(key, 'is selected');
+    handleCreate(contact) {
+        this.setState({
+            contact: update(this.state.contact, {$push: [contact]})
+        })
+    }
+
+    handleRemove() {
+        this.setState({
+            contact: update(this.state.contact, {$splice:[this.state.selectedKey, 1]})
+        })
+        this.state.selectedKey = -1;
+    }
+
+    handleEdit(name, phone) {
+        this.setState({
+            contact: update(this.state.contact, {
+                [this.state.selectedKey]: {
+                    name: {$set: name},
+                    phone: {$set: phone}
+                }
+            })
+        })
     }
 
     render() {
@@ -41,20 +69,26 @@ export default class Contact extends Component {
                 }
             );
             return data.map((contact, i)=> {
-                return (<ContactInfo
-                    contact={contact}
-                    key={i}
-                    onClick={()=>{this.handleClick(i)}}/>)
+                return (
+                    <ContactInfo
+                        contact={contact}
+                        key={i}
+                        onClick={()=>{this.handleClick(i)}}
+                    />
+                )
             })
         }
 
         return (
-            <ul>
+            <div>
                 <h1>Contact List</h1>
                 <input type="search" name="keyword" placeholder="Search" value={this.state.keyword} onChange={this.handleChange} />
                 <div>{mapToContact(this.state.contact)}</div>
                 <ContactDetails contact={this.state.contact[this.state.selectedKey]}/>
-            </ul>
+                <ContactCreate
+                    onCreate={this.handleCreate}
+                />
+            </div>
         )
     }
 }
