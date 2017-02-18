@@ -12,6 +12,7 @@ export default class ContactDetails extends Component {
         this.handleToggle = this.handleToggle.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     handleToggle() {
@@ -21,7 +22,6 @@ export default class ContactDetails extends Component {
                 phone: this.props.contact.phone
             });
         } else {
-            console.log(this.state)
             this.handleEdit();
         }
 
@@ -38,7 +38,15 @@ export default class ContactDetails extends Component {
     }
 
     handleEdit() {
-        this.props.onEdit(this.state.name, this.state.phone);
+        if (this.state.name.trim() && this.state.phone.trim()) {
+            this.props.onEdit(this.state.name, this.state.phone);
+        }
+    }
+
+    handleKeyPress(e) {
+        if (e.charCode === 13) {
+            this.handleToggle();
+        }
     }
 
     render() {
@@ -52,6 +60,7 @@ export default class ContactDetails extends Component {
                         placeholder="name"
                         value={this.state.name}
                         onChange={this.handleChange}
+                        onKeyPress={this.handleKeyPress}
                     />
                 </p>
                 <p>
@@ -61,6 +70,7 @@ export default class ContactDetails extends Component {
                         placeholder="phone"
                         value={this.state.phone}
                         onChange={this.handleChange}
+                        onKeyPress={this.handleKeyPress}
                     />
                 </p>
             </div>
