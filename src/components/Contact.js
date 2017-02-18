@@ -43,13 +43,24 @@ export default class Contact extends Component {
     }
 
     handleRemove() {
+        if(this.state.selectedKey < 0) {
+            return;
+        }
+
         this.setState({
-            contact: update(this.state.contact, {$splice:[this.state.selectedKey, 1]})
+            contact: update(this.state.contact, {
+                $splice: [[this.state.selectedKey, 1]]
+            })
         })
+        
         this.state.selectedKey = -1;
     }
 
     handleEdit(name, phone) {
+        if(this.state.selectedKey < 0) {
+            return;
+        }
+
         this.setState({
             contact: update(this.state.contact, {
                 [this.state.selectedKey]: {
@@ -84,7 +95,12 @@ export default class Contact extends Component {
                 <h1>Contact List</h1>
                 <input type="search" name="keyword" placeholder="Search" value={this.state.keyword} onChange={this.handleChange} />
                 <div>{mapToContact(this.state.contact)}</div>
-                <ContactDetails contact={this.state.contact[this.state.selectedKey]}/>
+                <ContactDetails 
+                    isSelected={this.state.selectedKey>=0}
+                    contact={this.state.contact[this.state.selectedKey]}
+                    onRemove={this.handleRemove}
+                    onEdit={this.handleEdit}
+                />
                 <ContactCreate
                     onCreate={this.handleCreate}
                 />

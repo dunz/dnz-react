@@ -34,6 +34,7 @@ export default class ContactCreate extends Component {
     render() {
         return (
             <div>
+                <h1>Contact Create</h1>
                 <input 
                     type="text" 
                     name="name" 
@@ -59,5 +60,5 @@ ContactCreate.propTypes = {
 }
 
 ContactCreate.defaultProps = {
-    onCreate: () => {console.info('onCreate is not defined.')}
+    onCreate: () => {console.error('onCreate is not defined.')}
 }
