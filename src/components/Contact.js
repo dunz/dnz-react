@@ -24,6 +24,21 @@ export default class Contact extends Component {
         this.handleEdit = this.handleEdit.bind(this);
     }
 
+    componentWillMount() {
+        let contact = localStorage.contact;
+        if (contact) {
+            this.setState({
+                contact: JSON.parse(contact)
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (JSON.stringify(prevState.contact) != JSON.stringify(this.state.contact)) {
+            localStorage.contact = JSON.stringify(this.state.contact);
+        }
+    }
+
     handleChange(e) {
         this.setState({
             keyword : e.target.value
@@ -52,7 +67,7 @@ export default class Contact extends Component {
                 $splice: [[this.state.selectedKey, 1]]
             })
         })
-        
+
         this.state.selectedKey = -1;
     }
 
